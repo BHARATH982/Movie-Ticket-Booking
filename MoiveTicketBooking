@@ -1,0 +1,95 @@
+package mysql;
+
+import java.util.*;
+import java.sql.*;
+
+public class MovieTicketBooking {
+	
+public static void main(String[] args) throws Exception{
+	
+    Scanner sc;
+    ResultSet r;
+    Statement st;
+
+    
+    try {
+            sc=new Scanner(System.in);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection c=DriverManager.getConnection("jdbc:mysql://localhost:3306/bharath","root","mysqlB7&");
+            st=c.createStatement();
+            
+            
+            String seatNo=null;
+            for(int i=1;i<2;i++) { 
+              r=st.executeQuery("Select movie from movieName");
+            
+              while(r.next()) {
+            	System.out.println(r.getString(1));
+              } //To print Movie in database 
+              System.out.println("Enter the movie name");
+              String movie=sc.nextLine();
+              r=st.executeQuery("select * from movies where mname='"+movie+"'and seatNo='"+seatNo+"'");
+              
+              
+              while(r.next()) {
+ 
+            	  System.out.println("MoiveName:"+r.getString(1)+"\nPrice:"+r.getInt(2)+
+            			  "\nType:"+r.getString(3)+"\nTheater:"+r.getString(4)
+            			  +"\nDate:"+r.getString(5)+"\nTime:"+r.getString(6));//To display details in table movies
+              }//End of while loop
+ 
+              r=st.executeQuery("select* from moviename where movie='"+movie+"'");
+              
+              while(r.next()) {
+            	  System.out.println("Moive Name:"+r.getString(1)+"\nJonour:"+r.getString(2)+
+            			  "\nLanguage:"+r.getString(3)+"\nTickets:"+r.getInt(4)+"\nPrice:"+r.getInt(5)+"\nType:"+r.getString(6) 
+            			  +"\nDate:"+r.getString(7)+"\nTime:"+r.getString(8));//to display details in table movie name
+              
+             }
+              
+              System.out.println("To see another movie Enter 0 or Enter 1");
+              i=sc.nextInt();
+            }//End of for loop
+            System.out.println("To buy ticket enter 2");
+            
+            int choice3=sc.nextInt();
+            while(choice3==2) {
+            	System.out.println("Enter movie name:");
+            	String movie1=sc.next();
+            	System.out.println("Number of tickets:");
+            	int no=sc.nextInt();
+            	System.out.println("Enter Name:");
+            	String name=sc.next();
+            	System.out.println("Enter phone number");
+            	long phno=sc.nextLong();
+            	r=st.executeQuery("select seatNo from movies where mname='"+movie1+"'"); 
+            	System.out.println("Available Seats");
+            	while(r.next()) {
+            		System.out.println(r.getString(1));//To display seats
+            	}
+            	System.out.println("Enter the seat No");
+            	seatNo=sc.next();
+            	String up="update movies set watcher='"+name+"',cPNo='"+phno+"'where mname='"+movie1+"'and seatNo='"+seatNo+"'";
+            	st.executeUpdate(up);
+            	up="update moviename set tickets=tickets'"+no+"'wheremovie='"+movie1+"'";
+            	st.executeUpdate(up);
+            	r=st.executeQuery("select* from moviename where movie='"+movie1+"'");
+            	
+            	while(r.next()) {
+ 
+            		System.out.println("MoiveName:"+r.getString(1)+"\nJonour:"+r.getString(2)+"\nLanguage:"+r.getString(3)+
+            				"\nTickets:"+r.getInt(4)+"\nPrice:"+r.getInt(5)*no+"\nType:"+r.getString(6) 
+            				+"\nDate:"+r.getString(7)+"\nTime:"+r.getString(8));//to display details in table movie name
+            	} 
+            	
+            	System.out.println("To exit enter 4 or To continue enter 2");
+            	choice3=sc.nextInt();
+            }//End of choice3 while loop
+ 
+    }// End of try block
+    		catch(Exception e) {
+    			System.out.println(e);
+    		}
+ 
+}
+}
